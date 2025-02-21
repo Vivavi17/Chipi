@@ -1,16 +1,22 @@
 import telebot.types
 from telebot import TeleBot
 
+from src.api.rate_limiter import RateLimiter, RateLimiterError
 from src.models.model import AddMessageModel, AddUserModel, ChatModel
 from src.service.botservice import BotService
 
 
 class BotController:
-    def __init__(self, bot: TeleBot, service: BotService) -> None:
+    def __init__(self, bot: TeleBot, service: BotService, rate_limiter: RateLimiter) -> None:
         self.bot = bot
         self.service = service
+        self._rate_limiter = rate_limiter
 
-        @bot.message_handler(chat_types=["supergroup", "group"], commands=["context"])
+        @bot.message_handler(
+            chat_types=["supergroup", "group"],
+            commands=["context"],
+            func=self._check_limit
+        )
         def get_context(message: telebot.types.Message) -> str:
             chat = ChatModel(id=message.chat.id)
             text = self.service.get_context(chat)
@@ -58,3 +64,11 @@ class BotController:
                 text=message.sticker.emoji,
             )
             self.service.save_sticker(user, msg)
+
+    def _check_limit(self, message: telebot.types.Message):
+        try:
+            self._rate_limiter.check_limit(message)
+        except RateLimiterError as e:
+            print(f"Rate limiter error: {e}")
+            return False
+        return True

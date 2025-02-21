@@ -21,11 +21,19 @@ class DBSettings(BaseModel):
     DB_PATH: str
 
 
+class RateLimiterSettings(BaseModel):
+    requests_per_interval: int
+    interval: int
+    minimal_delay: float
+
+
 class Settings(BaseSettings):
     LLM: LLMSettings
     OPENAI: OpenAISettings
     SERVER: ServerSettings
     DB: DBSettings
+    RATE_LIMITER: RateLimiterSettings
+
     model_config = SettingsConfigDict(
         env_file=".env",
         env_file_encoding="utf-8",
