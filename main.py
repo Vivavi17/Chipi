@@ -3,6 +3,7 @@ from sqlalchemy.orm import sessionmaker
 
 from confing import Settings
 from src.api.botcontroller import BotController
+from src.api.rate_limiter import ChatRateLimiter
 from src.context.model import OpenAIClient
 from src.context.service import OpenAIContext
 from src.db.repository import MessageRepository, UserRepository
@@ -24,6 +25,7 @@ if __name__ == "__main__":
         UserRepository(engine, session_maker),
         OpenAIContext(client, settings.LLM),
     )
-    controller = BotController(bot, service)
+    controller = BotController(bot, service,
+                               rate_limiter=ChatRateLimiter(settings=settings.RATE_LIMITER))
 
     bot.infinity_polling()
