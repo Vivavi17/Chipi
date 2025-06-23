@@ -8,3 +8,7 @@ OPENAI__AI_URL=https://openrouter.ai/api/v1
 
 LLM__PROMPT=funny prompt
 LLM__AI_MODEL=google/gemini-2.0-flash-exp:free
+
+RATE_LIMITER__REQUESTS_PER_INTERVAL=5
+RATE_LIMITER__INTERVAL=60
+RATE_LIMITER__MINIMAL_DELAY=5

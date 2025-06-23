@@ -5,3 +5,4 @@ messages.db
 .venv/
 venv/
 path.db
+.DS_Store

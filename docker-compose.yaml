@@ -1,0 +1,13 @@
+
+services:
+  app:
+    container_name: chipi
+    build:
+      context: .
+    env_file:
+      - .env
+    volumes:
+      - ./src:/app/src
+      - ./main.py:/app/main.py
+      - ./messages.db:/app/messages.db
+    restart: always
